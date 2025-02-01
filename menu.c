@@ -72,7 +72,9 @@ void handle_new_user(User *users, int *user_count) {
 
     do {
         printw("Email: ");
+        echo();
         getstr(new_user.email);
+        noecho();
     } while (!is_valid_email(new_user.email));
 
     users[(*user_count)++] = new_user;
