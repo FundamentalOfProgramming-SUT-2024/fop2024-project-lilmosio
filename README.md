@@ -12,6 +12,7 @@ git clone https://github.com/FundamentalOfProgramming-SUT-2024/fop2024-project-l
 ```
 And then, for compile:
 ```
+cd fop2024-project-lilmosio
 mkdir -p data
 make
 ./rogue_game
