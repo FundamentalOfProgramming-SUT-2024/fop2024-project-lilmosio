@@ -4,3 +4,15 @@
 فاز اول: 
 
 https://github.com/FundamentalOfProgramming-SUT-2024/fundamentalofprogramming-sut-2024-classroom-fop2024_project-Rogue_Project/blob/main/FOP_Project2024-Phase1.pdf
+
+# Install
+First, clone the repo:
+```
+git clone https://github.com/FundamentalOfProgramming-SUT-2024/fop2024-project-lilmosio.git
+```
+And then, for compile:
+```
+mkdir -p data
+make
+./rogue_game
+```
