@@ -1,4 +1,5 @@
 #include "player.h"
+#include <stdlib.h>
 
 void init_player(Player *player) {
     player->x = MAP_WIDTH / 2;
@@ -25,15 +26,21 @@ void move_player(Player *player, const GameMap *map, int dx, int dy) {
 void handle_trap(Player *player, const GameMap *map) {
     if (map->traps[player->y][player->x]) {
         player->health -= 10;
-        printw("You walked on a trap and lost 10 health points\n");
+        printw("You stepped on a trap and lost 10 health!\n");
         refresh();
         getch();
 
         if (player->health <= 0) {
-            printw("The player has died!\n");
+            printw("Game Over!\n");
             refresh();
             getch();
             exit(0);
         }
     }
+}
+
+void draw_player(const Player *player) {
+    attron(COLOR_PAIR(3));
+    mvaddch(player->y, player->x, '@');
+    attroff(COLOR_PAIR(3));
 }
