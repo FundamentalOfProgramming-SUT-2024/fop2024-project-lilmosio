@@ -1,6 +1,7 @@
 #include "game.h"
+#include "map.h"
+#include <string.h>
 
-// در game.c
 void init_ncurses() {
     initscr();
     cbreak();
@@ -20,4 +21,16 @@ void cleanup_ncurses() {
 
 bool is_valid_email(const char *email) {
     return (strchr(email, '@') && strchr(email, '.'));
+}
+
+void start_game() {
+    GameMap map;
+    generate_map(&map, 1);
+
+    int ch;
+    while ((ch = getch()) != 'q') {
+        clear();
+        draw_map(&map);
+        refresh();
+    }
 }
