@@ -1,4 +1,3 @@
-// main.c
 #include "game.h"
 #include "menu.h"
 #include "save.h"
