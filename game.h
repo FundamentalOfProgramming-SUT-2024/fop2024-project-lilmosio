@@ -2,10 +2,8 @@
 #define GAME_H
 
 #include <ncurses.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define MAP_WIDTH 80
 #define MAP_HEIGHT 24
@@ -32,13 +30,6 @@ typedef struct {
     int current_floor;
     bool has_master_key;
 } Player;
-
-typedef struct {
-    char tiles[MAP_HEIGHT][MAP_WIDTH];
-    bool traps[MAP_HEIGHT][MAP_WIDTH];
-    bool stairs[MAP_HEIGHT][MAP_WIDTH];
-    bool secret_doors[MAP_HEIGHT][MAP_WIDTH];
-} GameMap;
 
 void init_ncurses();
 void cleanup_ncurses();
