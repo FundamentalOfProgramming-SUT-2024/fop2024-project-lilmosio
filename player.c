@@ -17,30 +17,35 @@ void move_player(Player *player, const GameMap *map, int dx, int dy) {
 
     if (new_x >= 0 && new_x < MAP_WIDTH && 
         new_y >= 0 && new_y < MAP_HEIGHT && 
-        map->tiles[new_y][new_x] != '#') {
+        (map->tiles[new_y][new_x] == '.' || map->tiles[new_y][new_x] == '#' || map->tiles[new_y][new_x] == '+')) {
         player->x = new_x;
         player->y = new_y;
     }
 }
 
+void draw_player(const Player *player) {
+    attron(COLOR_PAIR(3) | A_BOLD);
+    mvaddch(player->y, player->x, '@');
+    attroff(COLOR_PAIR(3) | A_BOLD);
+}
+
 void handle_trap(Player *player, const GameMap *map) {
     if (map->traps[player->y][player->x]) {
         player->health -= 10;
-        printw("You stepped on a trap and lost 10 health!\n");
+        attron(COLOR_PAIR(4) | A_BLINK);
+        mvprintw(0, 0, "TRAP ACTIVATED! -10 HP");
+        attroff(COLOR_PAIR(4) | A_BLINK);
         refresh();
-        getch();
+        napms(500);
 
         if (player->health <= 0) {
-            printw("Game Over!\n");
+            attron(COLOR_PAIR(4) | A_BOLD);
+            mvprintw(1, 0, "YOU DIED!");
+            attroff(COLOR_PAIR(4) | A_BOLD);
             refresh();
-            getch();
+            napms(2000);
+            endwin();
             exit(0);
         }
     }
-}
-
-void draw_player(const Player *player) {
-    attron(COLOR_PAIR(3));
-    mvaddch(player->y, player->x, '@');
-    attroff(COLOR_PAIR(3));
 }
