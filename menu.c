@@ -7,28 +7,35 @@
 
 void handle_login(User *users, int user_count, User *current_user) {
     clear();
-    printw("=== User login ===\n");
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("        LOGIN           \n");
+    attroff(COLOR_PAIR(3) | A_BOLD);
 
     char username[50], password[50];
-    printw("Username: ");
+    attron(COLOR_PAIR(1));
+    printw(" Username: ");
     echo();
     getstr(username);
     noecho();
 
-    printw("Password: ");
+    printw(" Password: ");
     getstr(password);
 
     for (int i = 0; i < user_count; i++) {
         if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
             *current_user = users[i];
-            printw("Successful login!\n");
+            attron(COLOR_PAIR(6));
+            printw("Login successful!\n");
+            attroff(COLOR_PAIR(6));
             refresh();
             getch();
             return;
         }
     }
 
+    attron(COLOR_PAIR(4));
     printw("Username or password is wrong!\n");
+    attroff(COLOR_PAIR(4));
     refresh();
     getch();
 }
@@ -48,17 +55,22 @@ bool is_valid_password(const char *password) {
 
 void handle_new_user(User *users, int *user_count) {
     clear();
-    printw("=== Create New User ===\n");
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("     CREATE USER        \n");
+    attroff(COLOR_PAIR(3) | A_BOLD);
 
     User new_user = {0};
-    printw("Username: ");
+    attron(COLOR_PAIR(1));
+    printw(" Username: ");
     echo();
     getstr(new_user.username);
     noecho();
 
     for (int i = 0; i < *user_count; i++) {
         if (strcmp(users[i].username, new_user.username) == 0) {
+            attron(COLOR_PAIR(4));
             printw("Username already exists!\n");
+            attroff(COLOR_PAIR(4));
             refresh();
             getch();
             return;
@@ -66,12 +78,12 @@ void handle_new_user(User *users, int *user_count) {
     }
 
     do {
-        printw("Password (min 7 chars, 1 uppercase, 1 lowercase, 1 digit): ");
+        printw(" Password (min 7 chars, 1 uppercase, 1 lowercase, 1 digit): ");
         getstr(new_user.password);
     } while (!is_valid_password(new_user.password));
 
     do {
-        printw("Email: ");
+        printw(" Email: ");
         echo();
         getstr(new_user.email);
         noecho();
@@ -79,15 +91,21 @@ void handle_new_user(User *users, int *user_count) {
 
     users[(*user_count)++] = new_user;
     save_users(users, *user_count);
+    attron(COLOR_PAIR(6));
     printw("User created successfully!\n");
+    attroff(COLOR_PAIR(6));
     refresh();
     getch();
 }
 
 void start_new_game(User *user) {
     clear();
-    printw("=== Start new game===\n");
-    printw("User: %s\n", user->username);
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("      NEW GAME          \n");
+    attroff(COLOR_PAIR(3) | A_BOLD);
+
+    attron(COLOR_PAIR(1));
+    printw(" User: %s\n", user->username);
     refresh();
     getch();
 
@@ -95,6 +113,19 @@ void start_new_game(User *user) {
     GameMap map;
     init_player(&player);
     generate_map(&map, 1);
+
+    for (int y = 0; y < MAP_HEIGHT; y++) {
+        for (int x = 0; x < MAP_WIDTH; x++) {
+            if (map.tiles[y][x] == '.') {
+                player.x = x;
+                player.y = y;
+                break;
+            }
+        }
+        if (player.x != MAP_WIDTH / 2 || player.y != MAP_HEIGHT / 2) {
+            break;
+        }
+    }
 
     timeout(100);
     int ch;
@@ -118,56 +149,85 @@ void start_new_game(User *user) {
 
 int show_main_menu() {
     clear();
-    printw("=== Main Menu ===\n");
-    printw("1. Create New User\n");
-    printw("2. Login\n");
-    printw("3. Start New Game\n");
-    printw("4. Continue Saved Game\n");
-    printw("5. Leaderboard\n");
-    printw("6. Settings\n");
-    printw("7. Exit\n");
-    printw("Enter your choice: ");
+    int row, col;
+    getmaxyx(stdscr, row, col);
+
+    bkgd(COLOR_PAIR(1));
+
+    attron(COLOR_PAIR(2));
+    for (int i = 0; i < col; i++) {
+        mvaddch(row / 2 - 7, i, '=');
+        mvaddch(row / 2 + 8, i, '=');
+    }
+    for (int i = row / 2 - 7; i <= row / 2 + 8; i++) {
+        mvaddch(i, 0, '|');
+        mvaddch(i, col - 1, '|');
+    }
+    attroff(COLOR_PAIR(2));
+
+    // عنوان منو
+    attron(COLOR_PAIR(3) | A_BOLD);
+    mvprintw(row / 2 - 4, (col - strlen("      MAIN MENU         ")) / 2, "      MAIN MENU         ");
+    attroff(COLOR_PAIR(3) | A_BOLD);
+
+    // گزینه‌های منو
+    attron(COLOR_PAIR(1));
+    mvprintw(row / 2 - 2, (col - strlen("1. Create New User")) / 2, "1. Create New User");
+    mvprintw(row / 2 - 1, (col - strlen("2. Login")) / 2, "2. Login");
+    mvprintw(row / 2, (col - strlen("3. Start New Game")) / 2, "3. Start New Game");
+    mvprintw(row / 2 + 1, (col - strlen("4. Continue Saved Game")) / 2, "4. Continue Saved Game");
+    mvprintw(row / 2 + 2, (col - strlen("5. Leaderboard")) / 2, "5. Leaderboard");
+    mvprintw(row / 2 + 3, (col - strlen("6. Settings")) / 2, "6. Settings");
+    mvprintw(row / 2 + 4, (col - strlen("7. Exit")) / 2, "7. Exit");
+    attroff(COLOR_PAIR(1));
+
+    attron(A_BOLD);
+    mvprintw(row / 2 + 6, (col - strlen("Enter your choice: ")) / 2, "Enter your choice: ");
+    attroff(A_BOLD);
+
     refresh();
     return getch() - '0';
 }
 
 void show_leaderboard(const User *users, int user_count) {
     clear();
-    printw("=== Leaderboard ===\n");
-
-    User sorted_users[MAX_USERS];
-    memcpy(sorted_users, users, user_count * sizeof(User));
-    for (int i = 0; i < user_count - 1; i++) {
-        for (int j = i + 1; j < user_count; j++) {
-            if (sorted_users[i].score < sorted_users[j].score) {
-                User temp = sorted_users[i];
-                sorted_users[i] = sorted_users[j];
-                sorted_users[j] = temp;
-            }
-        }
-    }
-
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("        LEADERBOARD          \n");
+    printw("   PLAYER         SCORE      \n");
+    
     for (int i = 0; i < user_count && i < 10; i++) {
-        printw("%d. %s - Score: %d\n", i + 1, sorted_users[i].username, sorted_users[i].score);
+        printw("║ %-12s ║ %-13d ║\n", users[i].username, users[i].score);
     }
-
+    
+    attroff(COLOR_PAIR(3) | A_BOLD);
     refresh();
     getch();
 }
 
 void show_settings() {
     clear();
-    printw("=== Settings ===\n");
-    printw("1. Change Character Color\n");
-    printw("2. Change Music\n");
-    printw("3. Back\n");
-    refresh();
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("       SETTINGS         \n");
+    attroff(COLOR_PAIR(3) | A_BOLD);
 
+    attron(COLOR_PAIR(1));
+    printw(" 1. Change Character Color\n");
+    printw(" 2. Change Music\n");
+    printw(" 3. Back\n\n");
+    
+    attron(COLOR_PAIR(5));
+    printw(" Select: ");
+    attroff(COLOR_PAIR(5));
+    refresh();
     int choice = getch() - '0';
     if (choice == 1) {
+        attron(COLOR_PAIR(6));
         printw("Character color changed!\n");
+        attroff(COLOR_PAIR(6));
     } else if (choice == 2) {
+        attron(COLOR_PAIR(6));
         printw("Music changed!\n");
+        attroff(COLOR_PAIR(6));
     }
     refresh();
     getch();
@@ -175,19 +235,25 @@ void show_settings() {
 
 void continue_saved_game(User *user) {
     clear();
-    printw("Continue saved game for %s\n", user->username);
+    attron(COLOR_PAIR(3) | A_BOLD);
+    printw("   CONTINUE GAME        \n");
+    attroff(COLOR_PAIR(3) | A_BOLD);
 
     Player player;
     GameMap map;
     load_game(&player, &map);
 
     if (player.health > 0) {
-        printw("Game for user %s continues from the last saved point.\n", user->username);
-        printw("Current floor: %d\n", player.current_floor);
-        printw("Health: %d\n", player.health);
-        printw("Gold: %d\n", player.gold);
+        attron(COLOR_PAIR(1));
+        printw(" Game for user %s continues from the last saved point.\n", user->username);
+        printw(" Current floor: %d\n", player.current_floor);
+        printw(" Health: %d\n", player.health);
+        printw(" Gold: %d\n", player.gold);
+        attroff(COLOR_PAIR(1));
     } else {
+        attron(COLOR_PAIR(4));
         printw("No saved game found!\n");
+        attroff(COLOR_PAIR(4));
     }
 
     refresh();
