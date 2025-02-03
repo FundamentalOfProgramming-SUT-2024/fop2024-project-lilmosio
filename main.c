@@ -20,7 +20,9 @@ int main() {
                 if (current_user.username[0] != '\0') {
                     start_new_game(&current_user);
                 } else {
+                    attron(COLOR_PAIR(4));
                     printw("Please login first!\n");
+                    attroff(COLOR_PAIR(4));
                     refresh();
                     getch();
                 }
@@ -29,7 +31,9 @@ int main() {
                 if (current_user.username[0] != '\0') {
                     continue_saved_game(&current_user);
                 } else {
+                    attron(COLOR_PAIR(4));
                     printw("Please login first!\n");
+                    attroff(COLOR_PAIR(4));
                     refresh();
                     getch();
                 }
@@ -38,7 +42,9 @@ int main() {
             case 6: show_settings(); break;
             case 7: break;
             default:
+                attron(COLOR_PAIR(4));
                 printw("Invalid choice!\n");
+                attroff(COLOR_PAIR(4));
                 refresh();
                 getch();
         }
