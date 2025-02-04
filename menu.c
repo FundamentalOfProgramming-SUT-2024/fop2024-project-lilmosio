@@ -196,7 +196,11 @@ void show_leaderboard(const User *users, int user_count) {
     printw("   PLAYER         SCORE      \n");
     
     for (int i = 0; i < user_count && i < 10; i++) {
-        printw("║ %-12s ║ %-13d ║\n", users[i].username, users[i].score);
+        if (i == 0) {
+            printw(" %-12s  %-13d  (GOAT)\n", users[i].username, users[i].score);
+        } else {
+            printw(" %-12s  %-13d \n", users[i].username, users[i].score);
+        }
     }
     
     attroff(COLOR_PAIR(3) | A_BOLD);
