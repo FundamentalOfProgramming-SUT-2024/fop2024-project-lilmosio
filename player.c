@@ -1,5 +1,6 @@
 #include "player.h"
 #include <stdlib.h>
+#include "map.h"
 
 void init_player(Player *player) {
     player->x = MAP_WIDTH / 2;
