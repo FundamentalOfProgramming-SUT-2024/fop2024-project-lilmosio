@@ -3,6 +3,7 @@
 #define SAVE_H
 
 #include "game.h"
+#include "map.h"
 
 void save_users(const User *users, int count);
 void load_users(User *users, int *count);
