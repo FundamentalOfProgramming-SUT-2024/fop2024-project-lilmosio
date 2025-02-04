@@ -3,6 +3,7 @@
 #define PLAYER_H
 
 #include "game.h"
+#include "map.h"
 
 void init_player(Player *player);
 void move_player(Player *player, const GameMap *map, int dx, int dy);
