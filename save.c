@@ -1,6 +1,6 @@
-// save.c
 #include "save.h"
 #include <stdio.h>
+#include "map.h"
 
 void save_users(const User *users, int count) {
     FILE *file = fopen("data/users.dat", "wb");
